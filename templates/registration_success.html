@@ -1,0 +1,11 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<div class="container text-center">
+  <div class="alert alert-success">
+    <b>Success !</b>
+    <p>You have been signed up as: {{ username}} !</p>
+  </div>
+  <p>Sign in <a href="{{ url_for('login') }}">here</a> .</p>
+</div>
+{% endblock %}

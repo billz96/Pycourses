@@ -1,0 +1,40 @@
+{% extends 'partials/base.html' %}
+{% block title %}Register Page{% endblock %}
+{% block content %}
+<div class="container text-center">
+  <h1>Register</h1>
+  <hr>
+  <form action="{{ url_for('register') }}" method="post">
+    {{ form.csrf_token }}
+    {{ form.username.label }}
+    {{ form.username(class_="form-control") }}
+    {% if form.username.errors %}
+      {% for error in form.username.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    {{ form.password.label }}
+    {{ form.password(class_="form-control") }}
+    {% if form.password.errors %}
+      {% for error in form.password.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    {{ form.confirm.label }}
+    {{ form.confirm(class_="form-control") }}
+    {% if form.confirm.errors %}
+      {% for error in form.confirm.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Register !">
+  </form>
+</div>
+{% endblock %}

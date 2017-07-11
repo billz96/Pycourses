@@ -1,0 +1,9 @@
+{% extends 'partials/base.html' %}
+{% block title %}Home Page{% endblock %}
+{% block content %}
+<div class="container text-center">
+  <h1>Home Page</h1>
+  <p>Hi, user: {{ username }} !</p>
+  <p>To logout click <a href="{{ url_for('logout') }}">here</a> .</p>
+</div>
+{% endblock %}
