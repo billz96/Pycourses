@@ -4,9 +4,8 @@ def randId():
     return uuid4().hex
 
 def loggedIn(session, LoggedIn):
-    if 'user' in session:
-        randID = session['user']
-        userLoggedIn = LoggedIn.query.filter_by(rand_id=rand_ID).first()
+    if ('user' in session) and (session['user'] is not None):
+        userLoggedIn = LoggedIn.query.filter_by(rand_id=session['user']).first()
         if userLoggedIn:
             return userLoggedIn.username
         return False

@@ -1,19 +1,21 @@
 # Imports:
 from flask import Flask, render_template, request, session, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
-from os import urandom
+# from os import urandom
 from flask_wtf import FlaskForm
 from wtforms import TextField, PasswordField
 from wtforms.validators import InputRequired, Length, EqualTo
 from helpers import loggedIn, randId, logoutUser
 from bcrypt import hashpw, gensalt
+from datetime import timedelta
 
 
 # Configuratios:
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/vasilis/pycourses.db' # sqlite db url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SECRET_KEY'] = urandom(24) # generate a random secret key
+app.config['SECRET_KEY'] = '\xc9!Zi\xab\x8b\xae}D`\x17\xc69\x81\xcd\x93\xec+\xf1\xf2s&DG'
+# app.config['SECRET_KEY'] = urandom(24) generate a random secret key
 db = SQLAlchemy(app)
 
 
@@ -54,7 +56,16 @@ class RegisterForm(FlaskForm):
 # Views:
 @app.route('/home', methods=['GET'])
 def home():
-   username = loggedIn(session, LoggedIn)
+   if ('user' in session) and (session['user'] is not None):
+       print('Home User Session:',session['user'])
+       userLoggedIn = LoggedIn.query.filter_by(rand_id=str(session['user'])).first()
+       if userLoggedIn is not None:
+           username = userLoggedIn.username
+           print('Username:', username)
+       else:
+           username = False
+   else:
+       username = False
    if username == False:
        form = LoginForm()
        return render_template('login.html', form=form)
@@ -62,6 +73,13 @@ def home():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    if ('user' in session) and (session['user'] is not None):
+        print('Register User Session:',session['user'])
+        userLoggedIn = LoggedIn.query.filter_by(rand_id=str(session['user'])).first()
+        if userLoggedIn is not None:
+            print('Username:', userLoggedIn.username)
+            return render_template('index.html', username=userLoggedIn.username)
+
     form = RegisterForm()
     if form.validate_on_submit():
         hashedPwd = hashpw(str(request.form['password']).encode('utf-8'), gensalt()) # encrypt user's password
@@ -73,6 +91,13 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if ('user' in session) and (session['user'] is not None):
+        print('Login User Session:',session['user'])
+        userLoggedIn = LoggedIn.query.filter_by(rand_id=str(session['user'])).first()
+        if userLoggedIn is not None:
+            print('Username:', userLoggedIn.username)
+            return render_template('index.html', username=userLoggedIn.username)
+
     form = LoginForm()
     if form.validate_on_submit():
         pwd = request.form['password']
@@ -87,7 +112,7 @@ def login():
             error = 'Username or password are incorrect.'
             return render_template('login.html', form=form, loggedInError=error)
 
-        rand_ID = randId()
+        rand_ID = str(randId())
         while True:
             user = LoggedIn.query.filter_by(rand_id=rand_ID).first()
             if user:
@@ -97,6 +122,7 @@ def login():
 
         userLoggedIn = LoggedIn(username=request.form['username'], rand_id=rand_ID)
         session['user'] = rand_ID
+        print('Login Complete User Session:',session['user'])
         return render_template('index.html', username=userLoggedIn.username)
     return render_template('login.html', form=form)
 
@@ -105,6 +131,7 @@ def logout():
     if not 'user' in session:
         form = LoginForm()
         return render_template('login.html', form=form)
+    print('Logout User Session:',session['user'])
     logoutUser(session=session, LoggedIn=LoggedIn, db=db)
     form = LoginForm()
     return render_template('login.html', form=form)
