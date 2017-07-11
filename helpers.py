@@ -14,5 +14,7 @@ def loggedIn(session, LoggedIn):
 
 def logoutUser(session, LoggedIn, db):
     randID = session['user']
-    user = LoggedIn.query.filter_by(rand_id=str(randID).encode('utf-8')).delete()
+    user = LoggedIn.query.filter_by(rand_id=str(randID).encode('utf-8')).first()
+    db.session.delete(user)
+    db.session.commit()
     session.pop('user', None)

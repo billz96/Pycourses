@@ -54,7 +54,7 @@ class RegisterForm(FlaskForm):
 
 
 # Views:
-@app.route('/home', methods=['GET'])
+@app.route('/', methods=['GET'])
 def home():
    username = loggedIn(session, LoggedIn)
    if username == False:
@@ -69,7 +69,6 @@ def register():
     if username != False:
         return render_template('index.html', username=username)
 
-    print('Why is not logged in ?!')
     form = RegisterForm()
     if form.validate_on_submit():
         hashedPwd = hashpw(str(request.form['password']).encode('utf-8'), gensalt()) # encrypt user's password
@@ -85,7 +84,6 @@ def login():
     if username != False:
         return render_template('index.html', username=username)
 
-    print('Why is not logged in ?!')
     form = LoginForm()
     if form.validate_on_submit():
         pwd = request.form['password']
@@ -109,7 +107,8 @@ def login():
                 break
 
         userLoggedIn = LoggedIn(username=request.form['username'], rand_id=rand_ID)
-        print('Logged in user:',userLoggedIn.username)
+        db.session.add(userLoggedIn)
+        db.session.commit()
         session['user'] = rand_ID
         return render_template('index.html', username=userLoggedIn.username)
     return render_template('login.html', form=form)
