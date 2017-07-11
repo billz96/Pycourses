@@ -5,7 +5,7 @@ def randId():
 
 def loggedIn(session, LoggedIn):
     if ('user' in session) and (session['user'] is not None):
-        userLoggedIn = LoggedIn.query.filter_by(rand_id=session['user']).first()
+        userLoggedIn = LoggedIn.query.filter_by(rand_id=str(session['user'])).first()
         if userLoggedIn:
             return userLoggedIn.username
         return False

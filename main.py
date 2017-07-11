@@ -56,30 +56,20 @@ class RegisterForm(FlaskForm):
 # Views:
 @app.route('/home', methods=['GET'])
 def home():
-   if ('user' in session) and (session['user'] is not None):
-       print('Home User Session:',session['user'])
-       userLoggedIn = LoggedIn.query.filter_by(rand_id=str(session['user'])).first()
-       if userLoggedIn is not None:
-           username = userLoggedIn.username
-           print('Username:', username)
-       else:
-           username = False
-   else:
-       username = False
+   username = loggedIn(session, LoggedIn)
    if username == False:
        form = LoginForm()
        return render_template('login.html', form=form)
-   return render_template('index.html', username=username)
+   else:
+       return render_template('index.html', username=username)
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    if ('user' in session) and (session['user'] is not None):
-        print('Register User Session:',session['user'])
-        userLoggedIn = LoggedIn.query.filter_by(rand_id=str(session['user'])).first()
-        if userLoggedIn is not None:
-            print('Username:', userLoggedIn.username)
-            return render_template('index.html', username=userLoggedIn.username)
+    username = loggedIn(session, LoggedIn)
+    if username != False:
+        return render_template('index.html', username=username)
 
+    print('Why is not logged in ?!')
     form = RegisterForm()
     if form.validate_on_submit():
         hashedPwd = hashpw(str(request.form['password']).encode('utf-8'), gensalt()) # encrypt user's password
@@ -91,13 +81,11 @@ def register():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if ('user' in session) and (session['user'] is not None):
-        print('Login User Session:',session['user'])
-        userLoggedIn = LoggedIn.query.filter_by(rand_id=str(session['user'])).first()
-        if userLoggedIn is not None:
-            print('Username:', userLoggedIn.username)
-            return render_template('index.html', username=userLoggedIn.username)
+    username = loggedIn(session, LoggedIn)
+    if username != False:
+        return render_template('index.html', username=username)
 
+    print('Why is not logged in ?!')
     form = LoginForm()
     if form.validate_on_submit():
         pwd = request.form['password']
@@ -121,8 +109,8 @@ def login():
                 break
 
         userLoggedIn = LoggedIn(username=request.form['username'], rand_id=rand_ID)
+        print('Logged in user:',userLoggedIn.username)
         session['user'] = rand_ID
-        print('Login Complete User Session:',session['user'])
         return render_template('index.html', username=userLoggedIn.username)
     return render_template('login.html', form=form)
 
@@ -131,7 +119,7 @@ def logout():
     if not 'user' in session:
         form = LoginForm()
         return render_template('login.html', form=form)
-    print('Logout User Session:',session['user'])
+
     logoutUser(session=session, LoggedIn=LoggedIn, db=db)
     form = LoginForm()
     return render_template('login.html', form=form)
