@@ -102,6 +102,9 @@ def login():
 
 @app.route('/logout', methods=['GET'])
 def logout():
+    if loggedIn(session, LoggedIn) == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
     logoutUser(session=session, LoggedIn=LoggedIn, db=db)
     form = LoginForm()
     return render_template('login.html', form=form)
