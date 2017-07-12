@@ -18,6 +18,7 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Users/vasilis/pycourses.db' # sqlite db url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = '\xc9!Zi\xab\x8b\xae}D`\x17\xc69\x81\xcd\x93\xec+\xf1\xf2s&DG'
+# app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024 # 16 MB maximum bytes
 # app.config['SECRET_KEY'] = urandom(24) generate a random secret key
 db = SQLAlchemy(app)
 
