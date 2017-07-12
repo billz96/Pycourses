@@ -1,5 +1,5 @@
 {% extends 'partials/base.html' %}
-{% block title %}Home Page{% endblock %}
+{% block title %}Profile Page{% endblock %}
 {% block content %}
 
 <nav class="navbar navbar-inverse">
@@ -35,7 +35,23 @@
 </nav>
 
 <div class="container text-center">
-  <h1>Home Page</h1>
-  <p>Hi, user: <b>{{ username }}</b> !</p>
+  <h1>Profile of: {{ username }}</h1>
+  <p>This is your <b>profile</b> page <b>{{ user_profile.name }} {{ user_profile.surname }}</b>!</p>
+
+  {% if user_profile.avatar != 'saitama-batman.jpg' %}
+    <img src="static/avatars/{{ user_profile.avatar }}" alt="avatar" height="80" width="80"><br>
+  {% else %}
+    <img src="static/saitama-batman.jpg" alt="avatar" height="80" width="80"><br>
+  {% endif %}
+
+  <p></p>
+  <p><b>Description</b> {{ user_profile.description }}</p>
+  <p>
+    <b>Skills </b>
+    {% for skill in user_skills %}
+      {{ skill }}
+    {% endfor %}
+  </p>
+  <p>Edit your profile <a href="{{ url_for('update_profile') }}">here</a>.</p>
 </div>
 {% endblock %}

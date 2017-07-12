@@ -1,0 +1,92 @@
+{% extends 'partials/base.html' %}
+{% block title %}Edit Profile Page{% endblock %}
+{% block content %}
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{{ url_for('home') }}">Pycourses</a>
+    </div>
+    <div class="collapse navbar-collapse" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li><a href="{{ url_for('home') }}">Home</a></li>
+        <!-- <li class="dropdown">
+          <a class="dropdown-toggle" data-toggle="dropdown" href="#">Page 1 <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Page 1-1</a></li>
+            <li><a href="#">Page 1-2</a></li>
+            <li><a href="#">Page 1-3</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Page 2</a></li>
+        <li><a href="#">Page 3</a></li> -->
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="{{ url_for('profile') }}">Profile</a></li>
+        <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container text-center">
+  <h1>Edit Profile</h1>
+  <hr>
+  <p class="text-danger">** All fields are required. **</p>
+  <form action="{{ url_for('update_profile') }}" method="post" enctype="multipart/form-data">
+    {{ form.csrf_token }}
+    {{ form.name.label }}
+    {{ form.name(class_="form-control") }}
+    {% if form.name.errors %}
+      {% for error in form.name.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    {{ form.surname.label }}
+    {{ form.surname(class_="form-control") }}
+    {% if form.surname.errors %}
+      {% for error in form.surname.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    {{ form.avatar.label }}
+    {{ form.avatar(class_="form-control") }}
+    {% if form.avatar.errors %}
+      {% for error in form.avatar.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    {{ form.description.label }}
+    {{ form.description(class_="form-control") }}
+    {% if form.description.errors %}
+      {% for error in form.description.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    {{ form.skills.label }}
+    {{ form.skills(class_="form-control") }}
+    {% if form.skills.errors %}
+      {% for error in form.skills.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Edit Profile !">
+  </form>
+</div>
+{% endblock %}
