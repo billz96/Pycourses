@@ -18,3 +18,7 @@ def logoutUser(session, LoggedIn, db):
     db.session.delete(user)
     db.session.commit()
     session.pop('user', None)
+
+def split_skills(skills):
+    result = skills.split(',')
+    return result

@@ -37,23 +37,20 @@
 </nav>
 
 <div class="container text-center">
-  <h1>Profile of: {{ username }}</h1>
-  <p>This is your <b>profile</b> page <b>{{ user_profile.name }} {{ user_profile.surname }}</b>!</p>
-
-  {% if user_profile.avatar != 'saitama-batman.jpg' %}
-    <img src="static/avatars/{{ user_profile.avatar }}" alt="avatar" height="80" width="80"><br>
-  {% else %}
-    <img src="static/saitama-batman.jpg" alt="avatar" height="80" width="80"><br>
-  {% endif %}
-
-  <p></p>
-  <p><b>Description</b> {{ user_profile.description }}</p>
-  <p>
-    <b>Skills </b>
-    {% for skill in user_skills %}
-      {{ skill }}
-    {% endfor %}
-  </p>
-  <p>Edit your profile <a href="{{ url_for('update_profile') }}">here</a>.</p>
+  <h1>These are your courses {{ username }} !</h1>
+  {% for course in courses %}
+    <p>
+      <h3>{{ course.title }}</h3>
+      <img src="static/courses/{{ course.thumbnail }}" alt="course-thumbnail"><br>
+      <b>Description</b> <br>
+      {{ course.description }}<br>
+      <b>Required skills</b> <br>
+      {% for skill in course.required_skills | split_skills %}
+        {{ skill }}
+      {% endfor %}
+      <br>
+      <b>Total rating: </b>{{ course.avg_rating }} <b>Ratings: </b>{{ course.ratings }} <b>Enrolled: </b>{{ course.enrolled }}
+    </p>
+  {% endfor %}
 </div>
 {% endblock %}

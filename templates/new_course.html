@@ -1,5 +1,5 @@
 {% extends 'partials/base.html' %}
-{% block title %}Edit Profile Page{% endblock %}
+{% block title %}New Course Page{% endblock %}
 {% block content %}
 
 <nav class="navbar navbar-inverse">
@@ -30,40 +30,30 @@
         <li><a href="{{ url_for('my_courses') }}">My Courses</a></li>
         <li><a href="{{ url_for('course') }}">Add Course</a></li>
         <li><a href="{{ url_for('profile') }}">Profile</a></li>
-        <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+        <li><a href="{{ url_for('logout') }}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
       </ul>
     </div>
   </div>
 </nav>
 
 <div class="container text-center">
-  <h1>Edit Profile</h1>
+  <h1>New Course</h1>
   <hr>
-  <p class="text-danger">** This form resets everything in your profile. **</p>
-  <form action="{{ url_for('update_profile') }}" method="post" enctype="multipart/form-data">
+  <form action="{{ url_for('course') }}" method="post" enctype="multipart/form-data">
     {{ form.csrf_token }}
-    {{ form.name.label }}
-    {{ form.name(class_="form-control") }}
-    {% if form.name.errors %}
-      {% for error in form.name.errors %}
+    {{ form.title.label }}
+    {{ form.title(class_="form-control") }}
+    {% if form.title.errors %}
+      {% for error in form.title.errors %}
           <br>
           <div class="alert alert-danger">{{ error }}</div>
       {% endfor %}
     {% endif %}
     <br>
-    {{ form.surname.label }}
-    {{ form.surname(class_="form-control") }}
-    {% if form.surname.errors %}
-      {% for error in form.surname.errors %}
-          <br>
-          <div class="alert alert-danger">{{ error }}</div>
-      {% endfor %}
-    {% endif %}
-    <br>
-    {{ form.avatar.label }}
-    {{ form.avatar(class_="form-control") }}
-    {% if form.avatar.errors %}
-      {% for error in form.avatar.errors %}
+    {{ form.thumbnail.label }}
+    {{ form.thumbnail(class_="form-control") }}
+    {% if form.thumbnail.errors %}
+      {% for error in form.thumbnail.errors %}
           <br>
           <div class="alert alert-danger">{{ error }}</div>
       {% endfor %}
@@ -78,17 +68,18 @@
       {% endfor %}
     {% endif %}
     <br>
-    {{ form.skills.label }}
-    {{ form.skills(class_="form-control") }}
-    {% if form.skills.errors %}
-      {% for error in form.skills.errors %}
+    {{ form.required_skills.label }}
+    {{ form.required_skills(class_="form-control") }}
+    {% if form.required_skills.errors %}
+      {% for error in form.required_skills.errors %}
           <br>
           <div class="alert alert-danger">{{ error }}</div>
       {% endfor %}
     {% endif %}
     <br>
     <p></p>
-    <input type="submit" class="btn btn-success" value="Edit Profile !">
+    <input type="submit" class="btn btn-success" value="Add Course !">
   </form>
 </div>
+
 {% endblock %}
