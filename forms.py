@@ -26,3 +26,16 @@ class CourseForm(FlaskForm):
     thumbnail = FileField('Thumbnail', validators=[FileRequired(message='thumbnail is required !'), FileAllowed(['jpg'], 'images only!')])
     description = TextAreaField('Description', validators=[InputRequired('description field is required !'), Length(min=10, max=1500, message='description must be between 10 and 1500 characters long !')])
     required_skills  = TextAreaField('Required skills', validators=[InputRequired('required skills are required !'), Length(min=2, max=1500, message='required skills must be between 2 and 1500 characters long !')])
+
+class AddSkillsForm(FlaskForm):
+    new_skills = TextAreaField('Skills', validators=[InputRequired('skills field is required !'), Length(min=2, max=1500, message='skills field must be between 2 and 1500 characters long !')])
+
+class EditSkillsForm(FlaskForm):
+    updated_skills = TextAreaField('Skills', validators=[InputRequired('skills field is required !'), Length(min=2, max=1500, message='skills field must be between 2 and 1500 characters long !')])
+
+class EditAvatarForm(FlaskForm):
+    new_avatar = FileField('Avatar', validators=[FileRequired(message='avatar is required !'), FileAllowed(['jpg'], 'images only!')])
+
+class EditFullNameForm(FlaskForm):
+    new_name = TextField('Name', validators=[InputRequired('name is required !'), Length(min=4, max=50, message='name must be between 4 and 50 characters long !')])
+    new_surname = TextField('Surname', validators=[InputRequired('surname is required !'), Length(min=4, max=50, message='surname must be between 4 and 50 characters long !')])

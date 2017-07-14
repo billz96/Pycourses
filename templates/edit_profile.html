@@ -37,9 +37,9 @@
 </nav>
 
 <div class="container text-center">
-  <h1>Edit Profile</h1>
+  <h1>Reset Profile</h1>
   <hr>
-  <p class="text-danger">** This form resets everything in your profile. **</p>
+  <p class="text-danger">** All fields are required. **</p>
   <form action="{{ url_for('update_profile') }}" method="post" enctype="multipart/form-data">
     {{ form.csrf_token }}
     {{ form.name.label }}
@@ -88,7 +88,103 @@
     {% endif %}
     <br>
     <p></p>
-    <input type="submit" class="btn btn-success" value="Edit Profile !">
-  </form>
+    <input type="submit" class="btn btn-success" value="Reset !">
+  </form><br>
+  <p></p>
+  <p></p>
+
+  <hr>
+  <h1>Add skill(s)</h1>
+  <hr>
+  <form action="{{ url_for('add_skills') }}" method="post">
+    {{ a_skills.csrf_token }}
+    {{ a_skills.new_skills.label }}
+    {{ a_skills.new_skills(class_="form-control") }}
+    {% if a_skills.new_skills.errors %}
+      {% for error in a_skills.new_skills.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Add !">
+  </form><br>
+  <!-- <p></p> -->
+  <!-- <p></p> -->
+
+
+  <!-- <hr> -->
+  <!-- <h3>Edit skills</h3> -->
+  <!-- <hr>
+  <form action="" method="post">
+    {{ e_skills.csrf_token }}
+    {{ e_skills.updated_skills.label }}
+    {{ e_skills.updated_skills(class_="form-control") }}
+    {% if e_skills.updated_skills.errors %}
+      {% for error in e_skills.updated_skills.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Edit !">
+  </form><br> -->
+  <!-- <p></p> -->
+  <!-- <p></p> -->
+
+
+  <!-- <hr> -->
+  <!-- <h3>Edit avatar</h3> -->
+  <!-- <hr>
+  <form action="" method="post" enctype="multipart/form-data">
+    {{ e_avatar.csrf_token }}
+    {{ e_avatar.new_avatar.label }}
+    {{ e_avatar.new_avatar(class_="form-control") }}
+    {% if e_avatar.new_avatar.errors %}
+      {% for error in e_avatar.new_avatar.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Edit !">
+  </form><br> -->
+  <!-- <p></p> -->
+  <!-- <p></p> -->
+
+
+  <!-- <hr> -->
+  <!-- <h3>Edit full name</h3> -->
+  <!-- <hr>
+  <form action="" method="post">
+    {{ e_flname.csrf_token }}
+    {{ e_flname.new_name.label }}
+    {{ e_flname.new_name(class_="form-control") }}
+    {% if e_flname.new_name.errors %}
+      {% for error in e_flname.new_name.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    {{ e_flname.new_surname.label }}
+    {{ e_flname.new_surname(class_="form-control") }}
+    {% if e_flname.new_surname.errors %}
+      {% for error in e_flname.new_surname.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Edit !">
+  </form><br> -->
+  <!-- <p></p> -->
+  <!-- <p></p> -->
+
+
 </div>
 {% endblock %}

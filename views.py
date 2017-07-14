@@ -5,7 +5,8 @@ from werkzeug.utils import secure_filename
 from helpers import loggedIn, randId, logoutUser
 from bcrypt import hashpw, gensalt
 from models import User, LoggedIn, Profile, Course
-from forms import LoginForm, RegisterForm, EditProfileForm, CourseForm
+from forms import LoginForm, RegisterForm, EditProfileForm, CourseForm, AddSkillsForm, EditSkillsForm, EditAvatarForm, EditFullNameForm
+
 
 
 # Views:
@@ -18,6 +19,41 @@ def home():
    else:
        return render_template('index.html', username=username)
 
+
+
+@app.route('/add-skills', methods=['POST'])
+def add_skills():
+    username = loggedIn(session, LoggedIn)
+    if username == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
+
+    form = EditProfileForm()
+    e_skills = EditSkillsForm()
+    e_avatar = EditAvatarForm()
+    e_flname = EditFullNameForm()
+
+    a_skills = AddSkillsForm()
+    if a_skills.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        user_profile = Profile.query.filter_by(user_id=user.id).first()
+
+        # change profile and save
+        if user_profile.skills == 'no-skills':
+            user_profile.skills = request.form['new_skills']
+        else:
+            user_profile.skills += request.form['new_skills']
+        db.session.commit()
+
+        # render profile page
+        user_skills = user_profile.skills.split(',')
+        return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
+
+    # render edit profile page
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname)
+
+
+
 @app.route('/my-courses', methods=['GET'])
 def my_courses():
     username = loggedIn(session, LoggedIn)
@@ -28,6 +64,8 @@ def my_courses():
     user = User.query.filter_by(username=username).first()
     courses = Course.query.filter_by(user_id=user.id).all()
     return render_template('my_courses.html', username=username, courses=courses)
+
+
 
 @app.route('/new-course', methods=['GET', 'POST'])
 def course():
@@ -61,12 +99,20 @@ def course():
 
     return render_template('new_course.html', form=form)
 
+
+
 @app.route('/update-profile', methods=['GET', 'POST'])
 def update_profile():
     username = loggedIn(session, LoggedIn)
     if username == False:
         form = LoginForm()
         return render_template('login.html', form=form)
+
+    # AddSkillsForm, EditSkillsForm, EditAvatarForm, EditFullNameForm
+    a_skills = AddSkillsForm()
+    e_skills = EditSkillsForm()
+    e_avatar = EditAvatarForm()
+    e_flname = EditFullNameForm()
 
     form = EditProfileForm()
     if form.validate_on_submit():
@@ -92,9 +138,12 @@ def update_profile():
 
         # save changes in profile table
         db.session.commit()
-        return render_template('profile.html', username=username, user_profile=user_profile)
+        user_skills = user_profile.skills.split(',')
+        return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
 
-    return render_template('edit_profile.html', form=form)
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname)
+
+
 
 @app.route('/profile', methods=['GET'])
 def profile():
@@ -107,6 +156,8 @@ def profile():
     user_profile = Profile.query.filter_by(user_id=user.id).first()
     user_skills = user_profile.skills.split(',')
     return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
+
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -122,12 +173,14 @@ def register():
         db.session.commit() # save new user in User table
 
         new_user = User.query.filter_by(username=request.form['username']).first() # new profile
-        user_profile = Profile(user_id=new_user.id, name="no-name", surname="no-surname", avatar="saitama-batman.jpg", description="no-description", skills="no-skills")
+        user_profile = Profile(user_id=new_user.id, name="no-name", surname="no-surname", avatar="saitama-batman.jpg", description="no-description", skills="no-skills,")
         db.session.add(user_profile)
         db.session.commit() # save new profile in Profile table
 
         return render_template('registration_success.html', username=request.form['username'])
     return render_template('register.html', form=form)
+
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -163,6 +216,8 @@ def login():
         session['user'] = rand_ID
         return render_template('index.html', username=userLoggedIn.username)
     return render_template('login.html', form=form)
+
+
 
 @app.route('/logout', methods=['GET'])
 def logout():
