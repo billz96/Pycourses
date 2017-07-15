@@ -1,11 +1,11 @@
 from main import app, APP_ROOT, db
 from flask import render_template, request, session, redirect, url_for
-from os import path, mkdir
+from os import path, mkdir, remove
 from werkzeug.utils import secure_filename
 from helpers import loggedIn, randId, logoutUser
 from bcrypt import hashpw, gensalt
 from models import User, LoggedIn, Profile, Course
-from forms import LoginForm, RegisterForm, EditProfileForm, CourseForm, AddSkillsForm, EditSkillsForm, EditAvatarForm, EditFullNameForm
+from forms import LoginForm, RegisterForm, EditProfileForm, CourseForm, AddSkillsForm, EditSkillsForm, EditAvatarForm, EditFullNameForm, EditDescription, AddDescription
 
 
 
@@ -21,6 +21,193 @@ def home():
 
 
 
+@app.route('/add-descr', methods=['POST'])
+def add_descr():
+    username = loggedIn(session, LoggedIn)
+    if username == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
+
+    form = EditProfileForm()
+    a_skills = AddSkillsForm()
+    e_skills = EditSkillsForm()
+    e_avatar = EditAvatarForm()
+    e_descr = EditDescription()
+    e_flname = EditFullNameForm()
+
+    a_descr = AddDescription()
+    if a_descr.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        user_profile = Profile.query.filter_by(user_id=user.id).first()
+
+        # add and save description
+        if user_profile.description == 'no-description':
+            user_profile.description = request.form['extra_descr']
+        else:
+            user_profile.description += request.form['extra_descr']
+        db.session.commit()
+
+        # render profile page
+        user_skills = user_profile.skills.split(',')
+        return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
+
+    # render edit profile pages
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname, e_descr=e_descr, a_descr=a_descr)
+
+
+
+@app.route('/edit-descr', methods=['POST'])
+def edit_descr():
+    username = loggedIn(session, LoggedIn)
+    if username == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
+
+    form = EditProfileForm()
+    a_skills = AddSkillsForm()
+    e_skills = EditSkillsForm()
+    e_avatar = EditAvatarForm()
+    a_descr = AddDescription()
+    e_flname = EditFullNameForm()
+
+    e_descr = EditDescription()
+    if e_descr.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        user_profile = Profile.query.filter_by(user_id=user.id).first()
+
+        # edit and save description
+        user_profile.description = request.form['new_descr']
+        db.session.commit()
+
+        # render profile page
+        user_skills = user_profile.skills.split(',')
+        return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
+
+    # render edit profile pages
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname, e_descr=e_descr, a_descr=a_descr)
+
+
+
+@app.route('/edit-fullname', methods=['POST'])
+def edit_flname():
+    username = loggedIn(session, LoggedIn)
+    if username == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
+
+    form = EditProfileForm()
+    a_skills = AddSkillsForm()
+    e_skills = EditSkillsForm()
+    e_avatar = EditAvatarForm()
+    e_descr = EditDescription()
+    a_descr = AddDescription()
+
+    e_flname = EditFullNameForm()
+    if e_flname.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        user_profile = Profile.query.filter_by(user_id=user.id).first()
+
+        # change skills
+        user_profile.name = request.form['new_name']
+        user_profile.surname = request.form['new_surname']
+        db.session.commit()
+
+        # render profile page
+        user_skills = user_profile.skills.split(',')
+        return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
+
+    # render edit profile pages
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname, e_descr=e_descr, a_descr=a_descr)
+
+
+
+@app.route('/edit-avatar', methods=['POST'])
+def edit_avatar():
+    username = loggedIn(session, LoggedIn)
+    if username == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
+
+    form = EditProfileForm()
+    a_skills = AddSkillsForm()
+    e_skills = EditSkillsForm()
+    e_flname = EditFullNameForm()
+    e_descr = EditDescription()
+    a_descr = AddDescription()
+
+    e_avatar = EditAvatarForm()
+    if e_avatar.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        user_profile = Profile.query.filter_by(user_id=user.id).first()
+
+        # update avatar
+        new_avatar = e_avatar.new_avatar.data
+        filename = secure_filename(new_avatar.filename)
+
+        rand_ID = str(randId())
+        while True:
+            result = Profile.query.filter_by(avatar=rand_ID).first()
+            if result:
+                rand_ID = str(randId())
+            else:
+                break
+
+        filename = ''+rand_ID+'.jpg' # ex: filename = ekjenrfueorf.jpg
+        target = path.join(APP_ROOT, 'static/avatars/')
+        if not path.isdir(target):
+            mkdir(target)
+
+        old_path = path.join(target, user_profile.avatar)
+        new_path = path.join(target, filename)
+
+        if user_profile.avatar != "saitama-batman.jpg":
+            remove(old_path)
+
+        new_avatar.save(new_path)
+        user_profile.avatar = filename
+        db.session.commit()
+
+        # render profile page
+        user_skills = user_profile.skills.split(',')
+        return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
+
+    # render edit profile pages
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname, e_descr=e_descr, a_descr=a_descr)
+
+
+
+@app.route('/edit-skills', methods=['POST'])
+def edit_skills():
+    username = loggedIn(session, LoggedIn)
+    if username == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
+
+    form = EditProfileForm()
+    a_skills = AddSkillsForm()
+    e_avatar = EditAvatarForm()
+    e_flname = EditFullNameForm()
+    e_descr = EditDescription()
+    a_descr = AddDescription()
+
+    e_skills = EditSkillsForm()
+    if e_skills.validate_on_submit():
+        user = User.query.filter_by(username=username).first()
+        user_profile = Profile.query.filter_by(user_id=user.id).first()
+
+        # change skills
+        user_profile.skills = request.form['updated_skills']
+        db.session.commit()
+
+        # render profile page
+        user_skills = user_profile.skills.split(',')
+        return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
+
+
+    # render edit profile pages
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname, e_descr=e_descr, a_descr=a_descr)
+
+
 @app.route('/add-skills', methods=['POST'])
 def add_skills():
     username = loggedIn(session, LoggedIn)
@@ -32,6 +219,8 @@ def add_skills():
     e_skills = EditSkillsForm()
     e_avatar = EditAvatarForm()
     e_flname = EditFullNameForm()
+    e_descr = EditDescription()
+    a_descr = AddDescription()
 
     a_skills = AddSkillsForm()
     if a_skills.validate_on_submit():
@@ -50,7 +239,7 @@ def add_skills():
         return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
 
     # render edit profile page
-    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname)
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname, e_descr=e_descr, a_descr=a_descr)
 
 
 
@@ -81,10 +270,20 @@ def course():
         # save thumbnail
         thumbnail = form.thumbnail.data
         filename = secure_filename(thumbnail.filename)
-        filename = ''+str(user.id)+'_'+'course'+'.jpg'
+
+        rand_ID = str(randId())
+        while True:
+            result = Course.query.filter_by(thumbnail=rand_ID).first()
+            if result:
+                rand_ID = str(randId())
+            else:
+                break
+
+        filename = ''+rand_ID+'.jpg'
         target = path.join(APP_ROOT, 'static/courses/')
         if not path.isdir(target):
             mkdir(target)
+
         thumbnail.save(path.join(target, filename))
 
         # save course
@@ -113,6 +312,8 @@ def update_profile():
     e_skills = EditSkillsForm()
     e_avatar = EditAvatarForm()
     e_flname = EditFullNameForm()
+    e_descr = EditDescription()
+    a_descr = AddDescription()
 
     form = EditProfileForm()
     if form.validate_on_submit():
@@ -129,11 +330,27 @@ def update_profile():
         # update avatar
         avatar = form.avatar.data
         filename = secure_filename(avatar.filename) # maybe it's optional because i change the filename
-        filename = ''+str(user.id)+'_'+'avatar'+'.jpg' # user-id_avatar.jpg
+
+        rand_ID = str(randId())
+        while True:
+            result = Profile.query.filter_by(avatar=rand_ID).first()
+            if result:
+                rand_ID = str(randId())
+            else:
+                break
+
+        filename = ''+rand_ID+'.jpg'
         target = path.join(APP_ROOT, 'static/avatars/') # target = project's path + /static/avatars
         if not path.isdir(target): # if target doesn't exist
             mkdir(target) # we create the target
-        avatar.save(path.join(target, filename)) # save the file in the target
+
+        old_path = path.join(target, user_profile.avatar)
+        new_path = path.join(target, filename)
+
+        if user_profile.avatar != "saitama-batman.jpg":
+            remove(old_path)
+
+        avatar.save(new_path) # save the file in the target
         user_profile.avatar = filename
 
         # save changes in profile table
@@ -141,7 +358,7 @@ def update_profile():
         user_skills = user_profile.skills.split(',')
         return render_template('profile.html', username=username, user_profile=user_profile, user_skills=user_skills)
 
-    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname)
+    return render_template('edit_profile.html', form=form, a_skills=a_skills, e_skills=e_skills, e_avatar=e_avatar, e_flname=e_flname, e_descr=e_descr, a_descr=a_descr)
 
 
 
@@ -206,7 +423,7 @@ def login():
         while True:
             user = LoggedIn.query.filter_by(rand_id=rand_ID).first()
             if user:
-                rand_ID = randId()
+                rand_ID = str(randId())
             else:
                 break
 

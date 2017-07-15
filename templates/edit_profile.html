@@ -110,14 +110,14 @@
     <p></p>
     <input type="submit" class="btn btn-success" value="Add !">
   </form><br>
-  <!-- <p></p> -->
-  <!-- <p></p> -->
+  <p></p>
+  <p></p>
 
 
-  <!-- <hr> -->
-  <!-- <h3>Edit skills</h3> -->
-  <!-- <hr>
-  <form action="" method="post">
+  <hr>
+  <h1>Edit skills</h1>
+  <hr>
+  <form action="{{ url_for('edit_skills') }}" method="post">
     {{ e_skills.csrf_token }}
     {{ e_skills.updated_skills.label }}
     {{ e_skills.updated_skills(class_="form-control") }}
@@ -130,15 +130,15 @@
     <br>
     <p></p>
     <input type="submit" class="btn btn-success" value="Edit !">
-  </form><br> -->
-  <!-- <p></p> -->
-  <!-- <p></p> -->
+  </form><br>
+  <p></p>
+  <p></p>
 
 
-  <!-- <hr> -->
-  <!-- <h3>Edit avatar</h3> -->
-  <!-- <hr>
-  <form action="" method="post" enctype="multipart/form-data">
+  <hr>
+  <h1>Edit avatar</h1>
+  <hr>
+  <form id="edit-avatar" action="{{ url_for('edit_avatar') }}" method="post" enctype="multipart/form-data">
     {{ e_avatar.csrf_token }}
     {{ e_avatar.new_avatar.label }}
     {{ e_avatar.new_avatar(class_="form-control") }}
@@ -151,15 +151,15 @@
     <br>
     <p></p>
     <input type="submit" class="btn btn-success" value="Edit !">
-  </form><br> -->
-  <!-- <p></p> -->
-  <!-- <p></p> -->
+  </form><br>
+  <p></p>
+  <p></p>
 
 
-  <!-- <hr> -->
-  <!-- <h3>Edit full name</h3> -->
-  <!-- <hr>
-  <form action="" method="post">
+  <hr>
+  <h1>Edit full name</h1>
+  <hr>
+  <form action="{{ url_for('edit_flname') }}" method="post">
     {{ e_flname.csrf_token }}
     {{ e_flname.new_name.label }}
     {{ e_flname.new_name(class_="form-control") }}
@@ -181,9 +181,51 @@
     <br>
     <p></p>
     <input type="submit" class="btn btn-success" value="Edit !">
-  </form><br> -->
-  <!-- <p></p> -->
-  <!-- <p></p> -->
+  </form><br>
+  <p></p>
+  <p></p>
+
+
+  <hr>
+  <h1>Add description</h1>
+  <hr>
+  <form action="{{ url_for('add_descr') }}" method="post">
+    {{ a_descr.csrf_token }}
+    {{ a_descr.extra_descr.label }}
+    {{ a_descr.extra_descr(class_="form-control") }}
+    {% if a_descr.extra_descr.errors %}
+      {% for error in a_descr.extra_descr.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Edit !">
+  </form><br>
+  <p></p>
+  <p></p>
+
+
+  <hr>
+  <h1>Edit description</h1>
+  <hr>
+  <form action="{{ url_for('edit_descr') }}" method="post">
+    {{ e_descr.csrf_token }}
+    {{ e_descr.new_descr.label }}
+    {{ e_descr.new_descr(class_="form-control") }}
+    {% if e_descr.new_descr.errors %}
+      {% for error in e_descr.new_descr.errors %}
+          <br>
+          <div class="alert alert-danger">{{ error }}</div>
+      {% endfor %}
+    {% endif %}
+    <br>
+    <p></p>
+    <input type="submit" class="btn btn-success" value="Edit !">
+  </form><br>
+  <p></p>
+  <p></p>
 
 
 </div>

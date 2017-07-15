@@ -30,7 +30,7 @@ class Profile(db.Model):
     name = db.Column(db.String(50), unique=False, nullable=False)
     surname = db.Column(db.String(50), unique=False, nullable=False)
     description = db.Column(db.String(1500), unique=False, nullable=False)
-    avatar = db.Column(db.String(500), unique=False, nullable=False)
+    avatar = db.Column(db.String(32), unique=False, nullable=False)
     skills = db.Column(db.String(1500), unique=False, nullable=False)
 
     def __init__(self, user_id, name, surname, avatar, description, skills):
@@ -48,7 +48,7 @@ class Course(db.Model):
     user_id = db.Column(db.Integer, unique=True, nullable=False)
     title = db.Column(db.String(500), unique=False, nullable=False)
     description = db.Column(db.String(1500), unique=False, nullable=False)
-    thumbnail = db.Column(db.String(500), unique=False, nullable=False)
+    thumbnail = db.Column(db.String(32), unique=False, nullable=False)
     required_skills = db.Column(db.String(1500), unique=False, nullable=False)
     avg_rating = db.Column(db.Integer, unique=False, nullable=True)
     ratings = db.Column(db.Integer, unique=False, nullable=True)

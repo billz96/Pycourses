@@ -39,3 +39,9 @@ class EditAvatarForm(FlaskForm):
 class EditFullNameForm(FlaskForm):
     new_name = TextField('Name', validators=[InputRequired('name is required !'), Length(min=4, max=50, message='name must be between 4 and 50 characters long !')])
     new_surname = TextField('Surname', validators=[InputRequired('surname is required !'), Length(min=4, max=50, message='surname must be between 4 and 50 characters long !')])
+
+class AddDescription(FlaskForm):
+    extra_descr = TextAreaField('Description', validators=[InputRequired('description field is required !'), Length(min=10, max=1500, message='description must be between 10 and 1500 characters long !')])
+
+class EditDescription(FlaskForm):
+    new_descr = TextAreaField('Description', validators=[InputRequired('description field is required !'), Length(min=10, max=1500, message='description must be between 10 and 1500 characters long !')])
