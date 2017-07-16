@@ -39,7 +39,7 @@ def del_course(id):
     db.session.delete(course)
     db.session.commit()
 
-    # render my course page
+    # render my courses page
     user = User.query.filter_by(username=username).first()
     courses = Course.query.filter_by(user_id=user.id).all()
     return render_template('my_courses.html', username=username, courses=courses)
