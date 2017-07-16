@@ -21,6 +21,31 @@ def home():
 
 
 
+@app.route('/delete-course/<id>', methods=['GET'])
+def del_course(id):
+    username = loggedIn(session, LoggedIn)
+    if username == False:
+        form = LoginForm()
+        return render_template('login.html', form=form)
+
+
+    # delete thumbnail
+    course = Course.query.filter_by(id=id).first()
+    target = path.join(APP_ROOT, 'static/courses/')
+    file_path = path.join(target, course.thumbnail)
+    remove(file_path)
+
+    # delete course
+    db.session.delete(course)
+    db.session.commit()
+
+    # render my course page
+    user = User.query.filter_by(username=username).first()
+    courses = Course.query.filter_by(user_id=user.id).all()
+    return render_template('my_courses.html', username=username, courses=courses)
+
+
+
 @app.route('/add-descr', methods=['POST'])
 def add_descr():
     username = loggedIn(session, LoggedIn)

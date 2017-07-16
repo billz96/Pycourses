@@ -45,7 +45,7 @@ class Profile(db.Model):
 
 class Course(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, unique=True, nullable=False)
+    user_id = db.Column(db.Integer, unique=False, nullable=False)
     title = db.Column(db.String(500), unique=False, nullable=False)
     description = db.Column(db.String(1500), unique=False, nullable=False)
     thumbnail = db.Column(db.String(32), unique=False, nullable=False)
